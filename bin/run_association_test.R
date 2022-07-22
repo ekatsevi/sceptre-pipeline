@@ -50,7 +50,7 @@ for (i in seq(1, n_pairs)) {
     # get expressions and precomp
     gene_expressions <- as.numeric(gene_odm[[gene_id,]])
     gene_precomp <- fst::read_fst(gene_precomp_matrix_fp, gene_id) |> dplyr::pull()
-    if (inference_method == "gcm") {
+    if (inference_method %in% c("gcm", "gcm_crt")) {
       gene_fitted_means <- exp((global_cell_covariates %*% gene_precomp)[,1])
       gene_resids <- gene_expressions - gene_fitted_means
     } else { # crt
@@ -82,7 +82,16 @@ for (i in seq(1, n_pairs)) {
     out <- sceptre:::run_sceptre_using_gcm(gene_resids = gene_resids,
                                            gRNA_resids = grna_group_resids,
                                            side = side)
-  } else { # crt
+  } else if (inference_method == "gcm_crt") {
+    out <- sceptre:::run_sceptre_using_gcm_crt(expressions = gene_expressions, 
+                                               gRNA_indicators = grna_group_indicators, 
+                                               gRNA_precomp = synthetic_indicator_matrix, 
+                                               side = side, 
+                                               gene_fitted_means = gene_fitted_means, 
+                                               grna_group_fitted_means = grna_group_fitted_means, 
+                                               full_output = full_output)
+  }
+  else { # crt
     out <- sceptre:::run_sceptre_using_precomp_fast(expressions = gene_expressions,
                                                     gRNA_indicators = grna_group_indicators,
                                                     gRNA_precomp = synthetic_indicator_matrix, 

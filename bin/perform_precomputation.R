@@ -12,10 +12,11 @@ gene_odm_fp <- args[3] # gene odm fp
 pod_id_map <- args[4] # modality to pod id map
 pod_id <- as.integer(args[5]) # pod id (integer)
 threshold <- as.integer(args[6]) # threshold
-inference_method <- args[7] # inference method, either "crt" or "gcm"
+inference_method <- args[7] # inference method, either "crt", "gcm", or "gcm_crt"
 fam <- switch(inference_method,
   crt = "nb",
   gcm = "poisson",
+  gcm_crt = "poisson",
   stop("Inference method not recognized"))
 
 # load ondisc
