@@ -20,7 +20,7 @@ pair_fp=$gasp_data_dir"neg_control_pairs.rds"
 ##############
 # OUTPUT FILE:
 ##############
-result_fp=$PWD"/sceptre_result.rds"
+result_fp=$PWD"/sceptre_result_gcm_crt.rds"
 
 ###############
 # OPTIONAL ARGS
@@ -50,5 +50,5 @@ nextflow run main.nf \
  --grna_modality_name "grna_expression" \
  --n_pairs_to_sample $n_pairs_to_sample \
  --full_output "true" \
- --result_fp "$PWD/sceptre_result_crt.rds" \
- --inference_method "crt"
+ --result_fp $result_fp \
+ --inference_method "gcm_crt"

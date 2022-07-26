@@ -69,9 +69,7 @@ for (i in seq(1, n_pairs)) {
                                                                        grna_group = grna_group_id,
                                                                        threshold = threshold) |> as.integer()
 
-    if (inference_method == "gcm") {
-      grna_group_resids <- grna_group_indicators - grna_group_fitted_means
-    } else {
+    if (inference_method %in% c("gcm_crt", "crt")) {
       # sample the sparse matrix of grna presences/absences
       synthetic_indicator_matrix <- sceptre:::generate_synthetic_grna_data(fitted_probs = grna_group_fitted_means, B = B) 
     }
@@ -79,16 +77,18 @@ for (i in seq(1, n_pairs)) {
   
   # carry out the test
   if (inference_method == "gcm") {
-    out <- sceptre:::run_sceptre_using_gcm(gene_resids = gene_resids,
-                                           gRNA_resids = grna_group_resids,
+    out <- sceptre:::run_sceptre_using_gcm(expressions = gene_expressions,
+                                           gRNA_indicators = grna_group_indicators,
+                                           gene_fitted_means = gene_fitted_means, 
+                                           grna_group_fitted_means = grna_group_fitted_means,
                                            side = side)
   } else if (inference_method == "gcm_crt") {
     out <- sceptre:::run_sceptre_using_gcm_crt(expressions = gene_expressions, 
                                                gRNA_indicators = grna_group_indicators, 
                                                gRNA_precomp = synthetic_indicator_matrix, 
-                                               side = side, 
                                                gene_fitted_means = gene_fitted_means, 
                                                grna_group_fitted_means = grna_group_fitted_means, 
+                                               side = side, 
                                                full_output = full_output)
   }
   else { # crt
